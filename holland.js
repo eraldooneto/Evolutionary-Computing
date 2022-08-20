@@ -108,6 +108,7 @@ for (let i = 0; i < 5; i++) {
 
 const showDescendants = (chromossomesDescendants) => {
   if (chromossomesDescendants.length > 0) {
+    
     for (let i = 0; i < chromossomesDescendants.length; i++) {
       console.log(`${i + 1}°: [${chromossomesDescendants[i]}]`);
     }
@@ -115,6 +116,36 @@ const showDescendants = (chromossomesDescendants) => {
     console.log(`No descendants were born.`);
   }
 };
+
+// A mutação ocorrerá nos descendentes da população, com probabilidade aleatória e mutação aleatória no locus 
+const mutationProcess = (descendants, size) => {
+  for (let i = 0; i < descendants.length; i++) {
+    let mutationProbability = Math.floor(Math.random() * 101) + 1; // probabilidade de 1% a 100% de ocorrer
+    
+    if (mutationProbability > 90 && size <= 29) { // condição para ocorrer mutação 
+      for (let j = 0; j < 8; j++) { // percorro todos os locus do cromossomo
+        let locus = Math.floor(Math.random() * 2); // 0 ou 1
+        
+        if (locus === 0) {
+          if (descendants[i][j] === 0) {
+            descendants[i][j] = 1;
+          }
+        } else {
+          if (descendants[i][j] === 1) {
+            descendants[i][j] = 0;
+          }
+        }
+      }
+    } 
+  }
+
+  // Ele faz um último else no caso do locus ser 1, que vai pegar um locus da população[i][j]. Era melhor se fosse dos seus pais, mas são gerados aleatoriamente. 
+  return descendants;
+
+};
+
+// Como são dados gerados aleatoriamente, tenho que armazenar os dados em variáveis para mapear a solução
+// "em um mesmo conjunto de dados"
 
 // Cria a população aleatória e armazena na variável 
 const firstCromossomes = generateRandomPopulation();
@@ -133,4 +164,10 @@ sortChromossomes(firstCromossomes, adaptationInPopulation(firstCromossomes));
 console.log();
 
 console.log(`Descendentes: `);
-showDescendants(crossingChromossomes(firstCromossomes, 0));
+const descendants = crossingChromossomes(firstCromossomes, 0);
+showDescendants(descendants);
+console.log();
+
+console.log(`Mutação: `);
+const mutation = mutationProcess(descendants, 0);
+console.log(mutation);
