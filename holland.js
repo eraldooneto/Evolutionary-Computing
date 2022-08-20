@@ -1,3 +1,5 @@
+// Algorítmo genético de Holland - Versão: José Eraldo dos Santos Neto
+
 // Gera aleatoriamente uma população de cromossomos
 
 const generateRandomPopulation = () => {
@@ -170,4 +172,4 @@ console.log();
 
 console.log(`Mutação: `);
 const mutation = mutationProcess(descendants, 0);
-console.log(mutation);
+showDescendants(mutation);
