@@ -67,28 +67,70 @@ const sortChromossomes = (randomPopulation, adaptations) => {
 
 };
 
-// const crossingChromossomes = (population, size) => {
+// Função auxiliar para criar um array de descendentes sem o undefined
+const clearData = (descendants) => {
+  let descendantsFinal = []
+  for (let j = 0; j < descendants.length; j++) {
+    if (descendants[j] !== undefined) {
+      descendantsFinal.push(descendants[j]);
+    }
+  }
 
-//   let descendants = [];
+  return descendantsFinal;
+};
 
-//   for (let i = 0; i < 4; i++) {
-//     for (let j = 1; j < 5; j++) {
-//       let probability = Math.floor(Math.random() * 100 + 1);
-//       if (probability > 60 && size <= 28) {
-//         let cutSection = Math.floor(Math.random() * 9 + 1);
-//         for (let i = 0; i < cutSection; i++) {
-//           descendants[size + 1] = population[i]
+// Cruzamento dos cromossomos 
 
-//         }
-//       }
-//     }
-//   }
-// };
+const crossingChromossomes = (population, size) => { 
+let descendants = [];
 
+for (let i = 0; i < 5; i++) {
+  let firstParent = 0; 
+  let secondParent = 0;
+  let probability = Math.floor(Math.random() * 101) + 1; // prob. entre 1 e 100
+  let cutSection = Math.floor(Math.random() * 8); // gera um numero entre 0 e 7 para fazer o corte
 
+  while (firstParent === secondParent) { // Garantir que o pai e a mãe sejam escolhidos aleatoriamente e que não sejam iguais
+    firstParent =  Math.floor(Math.random() * 10);
+    secondParent = Math.floor(Math.random() * 10); 
+  }
+
+  if (probability > 60 && size <= 28) {
+    descendants[i] = population[firstParent].slice(0, cutSection).concat(population[secondParent].slice(cutSection, 8));
+    descendants[i + 1] = population[secondParent].slice(0, cutSection).concat(population[firstParent].slice(cutSection, 8));
+  }
+}
+  size++; 
+  descendants = clearData(descendants);
+  
+  return descendants;
+}; 
+
+const showDescendants = (chromossomesDescendants) => {
+  if (chromossomesDescendants.length > 0) {
+    for (let i = 0; i < chromossomesDescendants.length; i++) {
+      console.log(`${i + 1}°: [${chromossomesDescendants[i]}]`);
+    }
+  } else {
+    console.log(`No descendants were born.`);
+  }
+};
+
+// Cria a população aleatória e armazena na variável 
 const firstCromossomes = generateRandomPopulation();
+
+// Mostra a população
+console.log(`População gerada: `);
 showPopulation(firstCromossomes);
 console.log();
+
+console.log(`Adaptação da população: `);
 showAdaptationOnChromossomes(firstCromossomes, adaptationInPopulation(firstCromossomes));
 console.log();
+
+console.log(`Ordenação descendente dos cromossomos: `);
 sortChromossomes(firstCromossomes, adaptationInPopulation(firstCromossomes));
+console.log();
+
+console.log(`Descendentes: `);
+showDescendants(crossingChromossomes(firstCromossomes, 0));
