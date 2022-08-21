@@ -1,6 +1,8 @@
 // Algorítmo genético de Holland - Versão: José Eraldo dos Santos Neto
+// Original version 
 
 // Gera aleatoriamente uma população de cromossomos
+
 
 const generateRandomPopulation = () => {
   let chromossomes = [[], [], [], [], [], [], [], [], [], []];
@@ -49,6 +51,13 @@ const showAdaptationOnChromossomes = (randomPopulation, adaptations) => {
 };
 
 // Ordena os cromossomos com base na sua adaptação, chamando a função de impressão para mostrar na ordem descendente 
+
+/*
+    Para escolher os 5 melhores, preciso retornar o vetor ordenado. (primeira modificação na função sortChromossomes = (randomPopulation, adaptations)). 
+    Depois, tenho que fazer o cruzamento desses 5 melhores, utilizando o retorno acima, então vou ter que fazer o loop de 0 a 4 para modificar a função const crossingChromossomes = (population, size).
+    por fim, continuar o código. 
+
+*/
 const sortChromossomes = (randomPopulation, adaptations) => {
   for (let i = 0; i < 10; i++) {
     for (let j = 0; j < 10 - i - 1; j++) {
@@ -73,6 +82,7 @@ const sortChromossomes = (randomPopulation, adaptations) => {
 const clearData = (descendants) => {
   let descendantsFinal = []
   for (let j = 0; j < descendants.length; j++) {
+    
     if (descendants[j] !== undefined) {
       descendantsFinal.push(descendants[j]);
     }
@@ -146,7 +156,45 @@ const mutationProcess = (descendants, size) => {
 
 };
 
-// Como são dados gerados aleatoriamente, tenho que armazenar os dados em variáveis para mapear a solução
+// Calcula a inversão de seleções de partes aleatórias, dada uma condição para que seja feita a alteração. 
+
+const inversion = (population, size) => {
+
+  let invertedPopulation = population;
+
+  for (let i = 0; i < population.length; i++) {
+      let probability = Math.floor(Math.random() * 101) + 1;
+
+      if (probability > 90 && size <= 29) {
+          size++;
+                 
+          let inversionPartOne = Math.floor(Math.random() * 8); // 0 --> 7
+          let inversionPartTwo = Math.floor(Math.random() * 8); 
+
+          while (inversionPartTwo < inversionPartOne) {
+          inversionPartTwo = Math.floor(Math.random() * 8); 
+          }
+
+          if (inversionPartOne === 0 && inversionPartTwo < 7) {
+              invertedPopulation[i] = invertedPopulation[i].slice(inversionPartOne, inversionPartTwo + 1).reverse().concat(invertedPopulation[i].slice(inversionPartTwo + 1, 8));
+             
+          } else if (inversionPartOne === 0 && inversionPartTwo === 7) {
+              invertedPopulation[i] = invertedPopulation[i].reverse();
+
+          } else if (inversionPartOne > 0 && inversionPartTwo < 7) {
+              invertedPopulation[i] = invertedPopulation[i].slice(0, inversionPartOne).concat(invertedPopulation[i].slice(inversionPartOne, inversionPartTwo + 1).reverse().concat(invertedPopulation[i].slice(inversionPartTwo + 1, 8)));
+
+          } else {
+              invertedPopulation[i] = invertedPopulation[i].slice(0, inversionPartOne).concat(invertedPopulation[i].slice(inversionPartOne, inversionPartTwo + 1).reverse())
+          }
+      }  
+  }
+
+  return invertedPopulation; 
+
+};
+
+// LEMBRETE: Como são dados gerados aleatoriamente, tenho que armazenar os dados em variáveis para mapear a solução
 // "em um mesmo conjunto de dados"
 
 // Cria a população aleatória e armazena na variável 
@@ -161,7 +209,7 @@ console.log(`Adaptação da população: `);
 showAdaptationOnChromossomes(firstCromossomes, adaptationInPopulation(firstCromossomes));
 console.log();
 
-console.log(`Ordenação descendente dos cromossomos: `);
+console.log(`Ordenação decrescente dos cromossomos: `);
 sortChromossomes(firstCromossomes, adaptationInPopulation(firstCromossomes));
 console.log();
 
@@ -173,3 +221,7 @@ console.log();
 console.log(`Mutação: `);
 const mutation = mutationProcess(descendants, 0);
 showDescendants(mutation);
+
+console.log(`Inversão: `);
+const invertedPopulation = inversion(firstCromossomes, 0);
+showPopulation(invertedPopulation);
