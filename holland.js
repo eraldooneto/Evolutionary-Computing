@@ -225,3 +225,8 @@ showDescendants(mutation);
 console.log(`Inversão: `);
 const invertedPopulation = inversion(firstCromossomes, 0);
 showPopulation(invertedPopulation);
+console.log();
+
+console.log(`População descendente com sua adaptação: `);
+showAdaptationOnChromossomes(invertedPopulation, adaptationInPopulation(invertedPopulation));
+console.log();
